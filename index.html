@@ -910,7 +910,7 @@
 
         <footer>
             <p>Data from Cineplex websites, TMDB, OMDB</p>
-            <p>2026-09-16 09:06 Δ 02:20</p>
+            <p>2026-09-16 09:06 Δ 06:00</p>
             <p><a href="mailto:movies@muux.com" style="color:inherit; text-decoration:underline;">movies@muux.com</a></p>
         </footer>
     </div>
@@ -1765,13 +1765,13 @@
             // yet, so the whole row is omitted rather than showing blanks.
             const ratingStats = [];
             if (movie.omdb_rt_score != null) {
-                ratingStats.push(`<span class="rating-stat">🍅 <span class="rating-value">${movie.omdb_rt_score}%</span> <span class="rating-source">RT</span></span>`);
+                ratingStats.push(`<span class="rating-stat">🍅 <span class="rating-value">${movie.omdb_rt_score}%</span> <span class="rating-source" title="Rotten Tomatoes">RT</span></span>`);
             }
             if (movie.omdb_imdb_rating != null) {
-                ratingStats.push(`<span class="rating-stat">⭐ <span class="rating-value">${movie.omdb_imdb_rating}</span> <span class="rating-source">IMDb</span></span>`);
+                ratingStats.push(`<span class="rating-stat">⭐ <span class="rating-value">${movie.omdb_imdb_rating}</span> <span class="rating-source" title="Internet Movie Database">IMDb</span></span>`);
             }
             if (movie.omdb_metacritic != null) {
-                ratingStats.push(`<span class="rating-stat">Ⓜ️ <span class="rating-value">${movie.omdb_metacritic}</span> <span class="rating-source">Metacritic</span></span>`);
+                ratingStats.push(`<span class="rating-stat">Ⓜ️ <span class="rating-value">${movie.omdb_metacritic}</span> <span class="rating-source" title="Metacritic">MC</span></span>`);
             }
             document.getElementById('detail-ratings').innerHTML = ratingStats.join('');
 
@@ -2038,6 +2038,27 @@
             renderFixQueuePanel();
         });
         renderFixQueueBadge();
+
+        // Poster View's filters-panel row-span (see the .poster-mode CSS
+        // comment and renderMovies()) is computed from the panel's and a
+        // poster tile's *rendered* pixel heights, both of which change on
+        // orientation change / window resize (the auto-fill column count
+        // shifts, which changes each poster tile's width and therefore its
+        // aspect-ratio-driven height, and can reflow the panel's own
+        // content too). Without recomputing here, rotating a tablet/phone
+        // without a full page reload leaves the OLD span in place against
+        // the NEW layout -- exactly the "still too tall" symptom this was
+        // added to fix. Debounced via requestAnimationFrame so rapid
+        // resize events (dragging a window edge) don't thrash re-renders.
+        let resizeTicking = false;
+        window.addEventListener('resize', () => {
+            if (resizeTicking) return;
+            resizeTicking = true;
+            requestAnimationFrame(() => {
+                renderMovies();
+                resizeTicking = false;
+            });
+        });
 
         renderMovies();
     </script>
