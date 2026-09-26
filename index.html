@@ -897,10 +897,11 @@
 
                     <select id="cineplexFilter">
                         <option value="all">All Cinemas</option>
+                        <option value="1">T-Joy Emiterrace Tokorozawa</option>
                         <option value="nearest4">Nearest Four</option>
                         <option value="majors">Majors</option>
                         <option value="minors">Minors</option>
-                        <option value="1">T-Joy Emiterrace Tokorozawa</option><option value="2">United Cinemas Iruma</option><option value="3">United Cinemas Niiza</option><option value="4">United Cinemas Unikus Minami-Furuya</option><option value="5">United Cinemas Toshimaen</option><option value="6">T-Joy Seibu Oizumi</option><option value="7">Aeon Cinema Musashi Murayama</option><option value="8">Toho Cinemas Lalaport Fujimi</option><option value="9">Toho Cinemas Tachikawa Tachihi</option><option value="10">Cinema City Tachikawa</option><option value="11">MOVIX Saitama</option><option value="12">UpLink Kichijoji</option><option value="13">Kino Cinema Tachikawa</option><option value="14">Grand Cinema Sunshine Ikebukuro</option>
+                        <option value="2">United Cinemas Iruma</option><option value="3">United Cinemas Niiza</option><option value="4">United Cinemas Unikus Minami-Furuya</option><option value="5">United Cinemas Toshimaen</option><option value="6">T-Joy Seibu Oizumi</option><option value="7">Aeon Cinema Musashi Murayama</option><option value="8">Toho Cinemas Lalaport Fujimi</option><option value="9">Toho Cinemas Tachikawa Tachihi</option><option value="10">Cinema City Tachikawa</option><option value="11">MOVIX Saitama</option><option value="12">UpLink Kichijoji</option><option value="13">Kino Cinema Tachikawa</option><option value="14">Grand Cinema Sunshine Ikebukuro</option>
                     </select>
 
                     <select id="dateFilter">
@@ -923,10 +924,11 @@
 
                     <select id="languageFilter">
                         <option value="all">All Languages</option>
+                        <option value="English">English</option>
                         <option value="Japanese">Japanese</option>
                         <option value="!Japanese">Non-Japanese</option>
-                        <option value="English+Japanese">English &amp; Japanese</option>
-                        <option value="Arabic">Arabic</option><option value="Chinese">Chinese</option><option value="English">English</option><option value="Finnish">Finnish</option><option value="French">French</option><option value="Greek">Greek</option><option value="Kannada">Kannada</option><option value="Korean">Korean</option><option value="Swedish">Swedish</option>
+                        <option value="English+Japanese">English or Japanese</option>
+                        <option value="Arabic">Arabic</option><option value="Chinese">Chinese</option><option value="Finnish">Finnish</option><option value="French">French</option><option value="Greek">Greek</option><option value="Kannada">Kannada</option><option value="Korean">Korean</option><option value="Swedish">Swedish</option>
                     </select>
 
                     <select id="animationFilter">
@@ -944,6 +946,7 @@
                         <option value="title">Title Sort (A-Z)</option>
                         <option value="showtime">Next Showtime Sort</option>
                         <option value="showtimes">Showtime Number Sort</option>
+                        <option value="showtimes_asc">Showtime Number Low to High</option>
                     </select>
 
                     <select id="statusFilter">
@@ -971,7 +974,7 @@
 
         <footer>
             <p>Data from Cineplex websites, TMDB, OMDB</p>
-            <p>2026-09-26 09:05 Δ 11:41</p>
+            <p>2026-09-26 09:05 Δ 12:32</p>
             <p><a href="mailto:movies@muux.com" style="color:inherit; text-decoration:underline;">movies@muux.com</a></p>
         </footer>
     </div>
@@ -1518,6 +1521,8 @@
                     return a.title.localeCompare(b.title);
                 if (sortFilter === 'showtimes')
                     return b.total_showtimes - a.total_showtimes;
+                if (sortFilter === 'showtimes_asc')
+                    return a.total_showtimes - b.total_showtimes;
                 // Sort by true next upcoming showtime, not stale MIN(start_time)
                 const nextA = getNextUpcoming(a, activeDates, showingMatchesFilters);
                 const nextB = getNextUpcoming(b, activeDates, showingMatchesFilters);
@@ -2185,6 +2190,18 @@
         // resize events (dragging a window edge) don't thrash re-renders.
         let resizeTicking = false;
         window.addEventListener('resize', () => {
+            // Guarded to Poster View only (Sep 26 2026 fix) -- this
+            // listener exists solely for the row-span recompute described
+            // above, which only matters in Poster View. Previously called
+            // renderMovies() unconditionally on every resize, which fully
+            // rebuilds #movieGrid's innerHTML and therefore silently
+            // collapsed any open "See All Showtimes" panel (toggleShowtimes'
+            // 'visible' class lives on a DOM node that gets thrown away and
+            // recreated). Mobile Safari/Chrome fire a resize event when the
+            // address bar hides/shows on scroll, so this was closing the
+            // expansion on ordinary scrolling in Schedule/Grid View, where
+            // no row-span recompute is needed at all.
+            if (document.getElementById('scheduleDisplay').value !== 'poster') return;
             if (resizeTicking) return;
             resizeTicking = true;
             requestAnimationFrame(() => {
