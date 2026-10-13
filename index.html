@@ -1113,7 +1113,7 @@
 
         <footer>
             <p>Data from Cineplex websites, TMDB, OMDB</p>
-            <p>2026-10-13 09:05 Δ 10:02</p>
+            <p>2026-10-13 09:05 Δ 10:27</p>
             <p><a href="mailto:movies@muux.com" style="color:inherit; text-decoration:underline;">movies@muux.com</a></p>
         </footer>
     </div>
@@ -1689,8 +1689,13 @@
 
                 grid.innerHTML = `<div class="schedule-row-list">
                     ${rows.map(r => {
+                        // Icons/format/event-note, then " · " and the cineplex name. The
+                        // dot separates the two, so it's omitted when there are no icons
+                        // to separate (otherwise it's a stray leading dot).
+                        const metaIcons = `${r.s.icons}${noteIconHtml(r.s.note)}`;
+                        const cpxSep = metaIcons.trim() ? ' · ' : '';
                         const cpxLabel = cpxLabelNeeded
-                            ? ` · <span class="full-name">${cineplexNames[r.s.cineplex_id] || 'Cinema ' + r.s.cineplex_id}</span><span class="short-name">${cineplexShortNames[r.s.cineplex_id] || cineplexNames[r.s.cineplex_id] || 'Cinema ' + r.s.cineplex_id}</span>`
+                            ? `${cpxSep}<span class="full-name">${cineplexNames[r.s.cineplex_id] || 'Cinema ' + r.s.cineplex_id}</span><span class="short-name">${cineplexShortNames[r.s.cineplex_id] || cineplexNames[r.s.cineplex_id] || 'Cinema ' + r.s.cineplex_id}</span>`
                             : '';
                         const dateHeader = (spansMultipleDates && r.dt !== lastDt)
                             ? `<div class="schedule-date-header">${formatDateHeader(r.dt)}</div>` : '';
@@ -1698,7 +1703,7 @@
                         return dateHeader + `<div class="schedule-row" onclick="openDetailPanel(${r.movie.id})" role="button" tabindex="0">
                             <span class="time-badge">${r.s.display_time}</span>
                             <span class="row-title">${r.movie.title}</span>
-                            <span class="row-meta">${r.s.icons}${noteIconHtml(r.s.note)}${cpxLabel}</span>
+                            <span class="row-meta">${metaIcons}${cpxLabel}</span>
                         </div>`;
                     }).join('')}
                 </div>`;
