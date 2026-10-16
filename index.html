@@ -1182,7 +1182,7 @@
 
         <footer>
             <p>Data from Cineplex websites, TMDB, OMDB</p>
-            <p>2026-10-16 09:05 Δ 10:59</p>
+            <p>2026-10-16 09:05 Δ 12:19</p>
             <p><a href="mailto:movies@muux.com" style="color:inherit; text-decoration:underline;">movies@muux.com</a></p>
         </footer>
     </div>
@@ -1991,7 +1991,7 @@
                     const adminPsgr = adminOn
                         ? `<span class="lpsgr">${gap(movie.poster_src === null, 'P', 'No poster')}${gap(movie.overview_src !== 'local' && movie.overview_src !== 'tmdb', 'S', 'No English synopsis')}${gap(noGenre(movie), 'G', 'No genres')}${gap(!movie.duration, 'R', 'No runtime')}</span>`
                         : '';
-                    return `<div class="list-row${isJp ? ' jp' : ''}" data-id="${movie.id}" onclick="openDetailPanel(${movie.id})" onkeydown="if(event.key==='Enter')openDetailPanel(${movie.id})" role="button" tabindex="0">
+                    return `<div class="list-row${isJp ? ' jp' : ''}" data-id="${movie.id}" onclick="openDetailPanel(${movie.id})" onkeydown="if(event.key==='Enter'){event.preventDefault();openDetailPanel(${movie.id})}" role="button" tabindex="0">
                         ${adminSrc}<span class="lt" title="${escAttr(movie.title)}">${movie.title}</span>${adminPsgr}<span class="lnew">${movie.is_new ? '🆕' : ''}</span><span class="lcount" title="showings · cinemas">${countText}</span><span class="lw lang">${langCell(movie.language)}</span><span class="lw star">${hasFormat ? '★' : ''}</span><span class="lw genre">${movie.genres && movie.genres.length ? movie.genres[0] : ''}</span><span class="lw rt">${movie.duration ? movie.duration + 'm' : ''}</span>
                     </div>`;
                 }).join('');
