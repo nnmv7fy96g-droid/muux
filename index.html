@@ -857,6 +857,15 @@
             margin-bottom: 8px;
             line-height: 1.3;
         }
+        /* Original Japanese title, dimmed, under the English one (Nov 17 2026).
+           Hidden when empty (no Japanese title, or it is the displayed title). */
+        #detail-title-ja {
+            font-size: 0.85em;
+            color: var(--text-secondary);
+            margin: -4px 0 8px;
+            line-height: 1.4;
+        }
+        #detail-title-ja:empty { display: none; }
         #detail-tagline {
             font-style: italic;
             color: var(--accent);
@@ -1388,7 +1397,7 @@
 
         <footer>
             <p>Data from Cineplex websites, TMDB, OMDB</p>
-            <p>2026-11-16 09:05 Δ 18:49</p>
+            <p>2026-11-16 09:05 Δ 19:05</p>
             <p><a href="#about" id="about-link" style="color:inherit; text-decoration:underline;">About / このサイトについて</a> &middot; <a href="mailto:movies@muux.com" style="color:inherit; text-decoration:underline;">movies@muux.com</a></p>
         </footer>
     </div>
@@ -1403,6 +1412,7 @@
         </div>
         <div id="detail-body">
             <div id="detail-title"></div>
+            <div id="detail-title-ja"></div>
             <div id="detail-kind"></div>
             <div id="detail-tagline"></div>
             <div id="detail-ratings" class="detail-ratings"></div>
@@ -2625,6 +2635,9 @@
             renderDetailViewChips();
 
             document.getElementById('detail-title').textContent   = movie.title;
+            const jaTitle = (movie.clean_title || '').trim();
+            document.getElementById('detail-title-ja').textContent =
+                (jaTitle && jaTitle.toLowerCase() !== (movie.title || '').trim().toLowerCase()) ? `(${jaTitle})` : '';
             document.getElementById('detail-tagline').textContent = movie.tagline || '';
             document.getElementById('detail-kind').innerHTML = kindBadgeHtml(movie);
 
