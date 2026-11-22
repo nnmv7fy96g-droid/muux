@@ -238,8 +238,9 @@
         }
         .filter-control { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
         .filter-control > label { color: var(--text-secondary); font-size: .78em; font-weight: 650; }
-        #cineplexControl { grid-column: 1 / -1; }
-        #cineplexFilter { max-width: 560px; }
+        .filter-control select, .filter-control input, .genre-picker-toggle {
+            height: 40px; min-height: 40px; box-sizing: border-box;
+        }
         .sort-control-grid, .view-control-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr)); gap: 12px;
         }
@@ -255,7 +256,7 @@
             min-height: 40px; width: 100%; padding: 6px 10px; text-align: left;
             border: 2px solid var(--border-input); border-radius: 6px;
             background: var(--bg-input); color: var(--text-primary); cursor: pointer;
-            font-size: .95em;
+            font-size: .95em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .genre-picker-menu {
             position: absolute; z-index: 30; top: calc(100% + 4px); left: 0; right: 0;
@@ -1527,7 +1528,7 @@
 
         <footer>
             <p>Data from Cineplex websites, TMDB, OMDB</p>
-            <p>2026-11-22 09:06 Δ 08:14</p>
+            <p>2026-11-22 09:06 Δ 08:22</p>
             <p><a href="#about" id="about-link" style="color:inherit; text-decoration:underline;">About / このサイトについて</a> &middot; <a href="mailto:movies@muux.com" style="color:inherit; text-decoration:underline;">movies@muux.com</a></p>
         </footer>
     </div>
